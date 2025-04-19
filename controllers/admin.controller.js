@@ -91,3 +91,87 @@ exports.deleteBus = async (req, res) => {
     }
   };
   
+  // Ticket  adding functionality
+
+
+  exports.createTicket = async (req, res) => {
+    try {
+      const { busId, timeSlot, availableSeats, ticketPrice } = req.body;
+  
+      const bus = await Bus.findById(busId);
+      if (!bus) {
+        return res.status(404).json({ success: false, message: 'Bus not found' });
+      }
+  
+      const newTicket = {
+        timeSlot: dayjs(timeSlot, "MMMM D, YYYY h:mm A").toDate(),
+        availableSeats,
+        ticketPrice,
+      };
+  
+      bus.tickets.push(newTicket);
+      await bus.save();
+  
+      res.status(201).json({
+        success: true,
+        message: 'Ticket added successfully',
+        ticket: newTicket,
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  };
+
+  exports.updateTicket = async (req, res) => {
+    try {
+      const ticketId = req.params.id;
+      const updates = req.body;
+  
+      const bus = await Bus.findOne({ 'tickets._id': ticketId });
+      if (!bus) {
+        return res.status(404).json({ success: false, message: 'Ticket not found' });
+      }
+  
+      const ticket = bus.tickets.id(ticketId);
+      if (!ticket) {
+        return res.status(404).json({ success: false, message: 'Ticket not found in bus' });
+      }
+  
+      // Apply updates
+      Object.keys(updates).forEach((key) => {
+        ticket[key] = updates[key];
+      });
+  
+      await bus.save();
+  
+      res.status(200).json({
+        success: true,
+        message: 'Ticket updated successfully',
+        ticket,
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  };
+  
+  exports.deleteTicket = async (req, res) => {
+    try {
+      const ticketId = req.params.id;
+  
+      const bus = await Bus.findOne({ 'tickets._id': ticketId });
+      if (!bus) {
+        return res.status(404).json({ success: false, message: 'Ticket not found' });
+      }
+  
+      bus.tickets = bus.tickets.filter(t => t._id.toString() !== ticketId);
+      await bus.save();
+  
+      res.status(200).json({
+        success: true,
+        message: 'Ticket deleted successfully',
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  };
+  
