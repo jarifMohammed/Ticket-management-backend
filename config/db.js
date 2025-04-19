@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 dotenv.config(); // Load environment variables from .env
 
 const connectDB = async () => {
@@ -9,9 +9,9 @@ const connectDB = async () => {
       useUnifiedTopology: true,
     });
 
-    console.log('✅ MongoDB connected successfully');
+    console.log("✅ MongoDB connected successfully");
   } catch (error) {
-    console.error('❌ Error connecting to MongoDB:', error.message);
+    console.error("❌ Error connecting to MongoDB:", error.message);
     process.exit(1);
   }
 };

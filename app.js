@@ -4,14 +4,13 @@ const cors = require("cors");
 const app = express();
 const cookieParser = require("cookie-parser");
 
-
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+app.use("/auth", require("./routes/auth.routes"));
+app.use("/admin", require("./routes/bus.routes"));
 
-app.use('/auth',require("./routes/auth.routes"))
-app.use('/admin',require("./routes/bus.routes"))
-
+app.use("/", require("./routes/user.routes"));
 app.get("/", (req, res) => res.send("Ticket Management API"));
 
 module.exports = app;
-

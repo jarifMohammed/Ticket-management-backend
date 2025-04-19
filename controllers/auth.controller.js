@@ -22,7 +22,7 @@ exports.register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ name, email, password: hashedPassword, role });
     await user.save();
-    console.log('User saved successfully');
+    console.log("User saved successfully");
 
     // Generate the JWT token after successful registration
     const token = jwt.sign(
@@ -52,22 +52,17 @@ exports.register = async (req, res) => {
 
 // Login User
 exports.login = async (req, res) => {
-
-
   try {
-    
-
-
-
     const { email, password } = req.body;
 
     // Check if user exists
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email }).select("+password");
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
     // Compare the entered password with the stored hashed password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    if (!isMatch)
+      return res.status(400).json({ message: "Invalid credentials" });
 
     // Generate the JWT token after successful login
     const token = jwt.sign(
@@ -76,7 +71,6 @@ exports.login = async (req, res) => {
       { expiresIn: "7d" }
     );
     res.setHeader("Authorization", `Bearer ${token}`);
-
 
     // Set the token in an HTTP-only cookie
     res.cookie("token", token, {
@@ -90,7 +84,7 @@ exports.login = async (req, res) => {
     res.status(200).json({
       success: true,
       user: { name: user.name, email: user.email, role: user.role },
-      token:token
+      token: token,
     });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -99,6 +93,15 @@ exports.login = async (req, res) => {
 
 // Logout User
 exports.logout = (req, res) => {
+  const token = req.cookies.token;
+
+  // If token doesn't exist, user is not logged in
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "User already logged out or not logged in",
+    });
+  }
   // Clear the token (from cookie)
   res.clearCookie("token", {
     httpOnly: true,
