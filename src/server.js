@@ -15,7 +15,7 @@ app.use("/auth", require("./routes/auth.routes"));
 app.use("/admin", require("./routes/bus.routes"));
 app.use("/", require("./routes/user.routes"));
 
-app.get("/", (req, res) => res.send("Ticket Management API"));
+app.get("/home", (req, res) => res.send("Ticket Management API"));
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
