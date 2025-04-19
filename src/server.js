@@ -15,7 +15,14 @@ app.use("/auth", require("./routes/auth.routes"));
 app.use("/admin", require("./routes/bus.routes"));
 app.use("/", require("./routes/user.routes"));
 
-app.get("/home", (req, res) => res.send("Ticket Management API"));
+app.get("/home", (req, res) => {
+  res.status(200).json({
+    message: "✅ Ticket Management API is running!",
+    status: "success",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
