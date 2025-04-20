@@ -1,5 +1,6 @@
 const Bus = require("../models/bus.model");
 const User = require("../models/user.model");
+const Booking = require("../models/booking.model");
 
 // GET /buses - Get all available buses
 exports.getAllBuses = async (req, res) => {
@@ -30,7 +31,9 @@ exports.getAllBuses = async (req, res) => {
 
 exports.purchaseTicket = async (req, res) => {
   try {
-    const { busNumber, timeSlot, seatsToPurchase } = req.body;
+    const { busNumber, timeSlot, seatsToPurchase} = req.body;
+    const userId = req.user._id;
+
 
     const bus = await Bus.findOne({ busNumber }).exec();
     if (!bus)
@@ -50,15 +53,38 @@ exports.purchaseTicket = async (req, res) => {
         .json({ success: false, message: "Not enough available seats" });
     }
 
+    // Update ticket values
     ticket.availableSeats -= seatsToPurchase;
     ticket.soldSeats += seatsToPurchase;
 
+    // Save updated bus data (tickets are subdocs)
     await bus.save();
 
+    // Optionally calculate total price
+    const totalPrice = ticket.ticketPrice * seatsToPurchase;
+
+    const newBooking = new Booking({
+      userId,
+      ticketId:ticket.id, // this is available because of `_id: { auto: true }`
+      busId: bus.id,
+      timeSlot:ticket.timeSlot,
+      seatsBooked: seatsToPurchase,
+      totalPrice,
+      bookingStatus: "confirmed",
+    });
+    await newBooking.save();
+
+    // Send response (but without creating a Booking record)
     res.status(200).json({
       success: true,
-      message: "Ticket purchased successfully",
+      message: "Ticket purchased successfully (not saved to bookings)",
       remainingSeats: ticket.availableSeats,
+      totalPrice,
+      ticketDetails: {
+        timeSlot: ticket.timeSlot,
+        seatsBooked: seatsToPurchase,
+        ticketPrice: ticket.ticketPrice,
+      },
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 // Schema for tickets in different time slots
 const ticketSchema = new mongoose.Schema({
+  _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
   timeSlot: {
     type: Date,
     required: true,
