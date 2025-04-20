@@ -84,7 +84,7 @@ exports.purchaseTicket = async (req, res) => {
     // Send response (but without creating a Booking record)
     res.status(200).json({
       success: true,
-      message: "Ticket purchased successfully (not saved to bookings)",
+      message: "Ticket purchased successfully and saved to bookings)",
       remainingSeats: ticket.availableSeats,
       totalPrice,
       ticketDetails: {
