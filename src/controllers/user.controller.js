@@ -1,6 +1,7 @@
 const Bus = require("../models/bus.model");
 const User = require("../models/user.model");
 const Booking = require("../models/booking.model");
+const { default: mongoose } = require("mongoose");
 
 // GET /buses - Get all available buses
 exports.getAllBuses = async (req, res) => {
@@ -31,8 +32,13 @@ exports.getAllBuses = async (req, res) => {
 
 exports.purchaseTicket = async (req, res) => {
   try {
-    const { busNumber, timeSlot, seatsToPurchase} = req.body;
-    const userId = req.user._id;
+
+    
+    const { busNumber, timeSlot, seatsToPurchase,} = req.body;
+    
+    const userId = req.user && req.user._id
+   
+
 
 
     const bus = await Bus.findOne({ busNumber }).exec();
@@ -64,9 +70,10 @@ exports.purchaseTicket = async (req, res) => {
     const totalPrice = ticket.ticketPrice * seatsToPurchase;
 
     const newBooking = new Booking({
-      userId,
-      ticketId:ticket.id, // this is available because of `_id: { auto: true }`
-      busId: bus.id,
+      userId: new mongoose.Types.ObjectId(userId),
+      busNumber: bus.busNumber,
+      ticketId:ticket._id, // this is available because of `_id: { auto: true }`
+      busId: bus._id,
       timeSlot:ticket.timeSlot,
       seatsBooked: seatsToPurchase,
       totalPrice,

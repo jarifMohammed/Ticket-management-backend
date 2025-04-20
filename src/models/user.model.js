@@ -17,7 +17,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
     },
-
     password: {
       type: String,
       required: [true, "Password is required"],
@@ -29,8 +28,6 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
-  },
-  {
     purchasedTickets: [
       {
         busNumber: String,
@@ -38,7 +35,6 @@ const userSchema = new mongoose.Schema(
         seatsPurchased: Number,
       },
     ],
-    default: [],
   },
   {
     timestamps: true,
