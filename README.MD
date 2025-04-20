@@ -1,6 +1,6 @@
 # 🎟️ **Ticket Management System — Class Scheduling & Booking**
 
-🚀 **Live Link:** [Visit App](https://ticket-management-backend-27yb.onrender.com)
+🚀 **Live Link:** [Visit App](https://ticket-management-backend-27yb.onrender.com/home)
 
 
 📬 **Postman API Collection:** [View Collection](https://documenter.getpostman.com/view/41543909/2sB2cd5yL5)
@@ -137,7 +137,7 @@
 ## 🔰 API Documentation
 
 ### 🔗 API Base URL
-[https://ticket-management-backend-27yb.onrender.com](https://ticket-management-backend-27yb.onrender.com)
+[https://ticket-management-backend-27yb.onrender.com](https://ticket-management-backend-27yb.onrender.com/home)
 
 ---
 
